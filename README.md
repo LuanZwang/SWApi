@@ -1,8 +1,9 @@
 # SWApi
 This project was made to test some tech skills
 
-#### This documentation is divided in two parts
+#### This documentation is divided in three parts
 * ### API
+* ### How to run the project
 * ### Code Coverage
 
 # API
@@ -133,6 +134,24 @@ The API consists in 4 endpoints, being them:
 | nextPage     | yes       |when theres no data on next page |
 | previousPage | yes       |when it's on first page          |
 | items        | no        |N/A                              |
+
+# Setup to run the project
+To run the code coverage analysis, I recommend you to use a docker infrastructure manager, like [Rancher Desktop](https://rancherdesktop.io/)
+
+After installing and configuring the docker manager command on the root page (the path is the root of SWApi):
+```
+    docker-compose up -d
+```
+
+It will create a container of mongodb, where the connection string is:
+```
+    mongodb://admin:admin@127.0.0.1:27017
+```
+
+After that, you can use the application of your choice to run the command [on this gist](https://gist.github.com/LuanZwang/2b2f0780bd703580caa5da0230c5a724) to add the [swapi planets](https://swapi.dev/api/planets) on your localhost MongoDB.
+
+With all complete, you can run the application
+
 
 # Code Coverage
 To run the code coverage analysis, I recommend you to use a docker infrastructure manager, like [Rancher Desktop](https://rancherdesktop.io/)
