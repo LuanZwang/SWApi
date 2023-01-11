@@ -1,0 +1,8 @@
+﻿C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Data\Configure.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Data\Connection\Interface\IMongoConnection.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Data\Connection\Interface\IMongoConnectionConfig.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Data\Connection\MongoConnection.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Data\Connection\MongoConnectionConfig.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Data\Repository\Base\IRepository.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Data\Repository\Interface\IPlanetRepository.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Data\Repository\Planet\PlanetRepository.cs

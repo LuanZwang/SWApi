@@ -1,0 +1,16 @@
+﻿C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\Api\Controllers\PlanetsControllerTest.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\Application\Service\PlanetServiceTest.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\Data\Connection\MongoConnectionConfigTest.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\Data\Connection\MongoConnectionTest.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\Data\MongoDb\Mongo2GoConnection.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\Data\MongoDb\Mongo2GoSettings.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\Data\Repository\PlanetRepositoryTest.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\Domain\Utils\PaginationUtilsTest.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\TestUtils\EnumeratedPropsUtils.cs
+C:\Users\Luan\.nuget\packages\microsoft.net.test.sdk\17.4.1\build\netcoreapp3.1\Microsoft.NET.Test.Sdk.Program.cs
+C:\Users\Luan\.nuget\packages\microsoft.testplatform.testhost\17.4.1\build\netcoreapp3.1\x64\testhost.exe
+C:\Users\Luan\.nuget\packages\microsoft.testplatform.testhost\17.4.1\build\netcoreapp3.1\x64\testhost.dll
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Test\sonar.bat
+C:\Users\Luan\.nuget\packages\mstest.testadapter\3.0.2\build\net6.0\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+C:\Users\Luan\.nuget\packages\mstest.testadapter\3.0.2\build\net6.0\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+C:\Users\Luan\.nuget\packages\mstest.testadapter\3.0.2\build\net6.0\Microsoft.TestPlatform.AdapterUtilities.dll
