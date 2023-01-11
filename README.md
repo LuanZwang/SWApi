@@ -1,7 +1,11 @@
 # SWApi
 This project was made to test some tech skills
 
-## API
+#### This documentation is divided in two parts
+* ### API
+* ### Code Coverage
+
+# API
 The API consists in 4 endpoints, being them:
 
 | Name | Route                              | Verb  | Description |
@@ -130,3 +134,26 @@ The API consists in 4 endpoints, being them:
 | previousPage | yes       |when it's on first page          |
 | items        | no        |N/A                              |
 
+# Code Coverage
+To run the code coverage analysis, I recommend you to use a docker infrastructure manager, like [Rancher Desktop](https://rancherdesktop.io/)
+
+After installing and configuring the docker manager, run a sonarqube container using the following command:
+```
+docker run -d --name sonarqube -p 9000:9000 -p 9092:9092 sonarqube:8.9.1-community
+```
+
+When finished, access https://localhost:9000 using the credential "admin" for user and "admin" for password, then you'll be redirected to a page to redefine your password.
+
+When you redefined your password, go to [The Security Page](http://localhost:9000/account/security/), where you will create a token with name "SWApi".
+
+Having the token in hands, go to the tests project (the path is SWApi\SWApi.Test) and do a right click on the sonar.bat file, then click in edit.
+
+Replace the "TOKEN_VALUE" paramater to the token you got, keeping it in the double quotes.
+
+The process will be like this:
+
+You will change /d:sonar.login="TOKEN_VALUE" to /d:sonar.login="51ac19b8a6e82d62010865b54945524d8a339682"
+
+Now, save the file, close the editor and do a double click on it. A console window will open and start to run.
+
+When it finishes, you can click any key to close the console and you will be able to se a dashboard on the main page on your [localhost sonarqube](http://127.0.0.1:9000/projects) and you will can see the coverage results.
