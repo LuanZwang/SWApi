@@ -1,5 +1,7 @@
-﻿using SWApi.Application.Service.Interface;
+﻿using NLog;
+using SWApi.Application.Service.Interface;
 using SWApi.Data.Repository.Interface;
+using SWApi.Domain.Configuration.Logging;
 using SWApi.Domain.Dto.Api.Commom;
 using SWApi.Domain.Dto.Api.Planet;
 using SWApi.Domain.Planet;
@@ -11,15 +13,20 @@ namespace SWApi.Application.Service.Planet
     public sealed class PlanetService : IPlanetService
     {
         private readonly IPlanetRepository _planetRepository;
+        private readonly ILogger _logger;
 
         public PlanetService(
+            ILogControl logger,
             IPlanetRepository planetRepository)
         {
+            _logger = logger.GetLogger(GetType().Name);
             _planetRepository = planetRepository;
         }
 
         public bool Delete(Guid id)
         {
+            _logger.Info($"Method: Delete");
+
             if (id == Guid.Empty)
                 return false;
 
@@ -28,6 +35,8 @@ namespace SWApi.Application.Service.Planet
 
         public GetAllDto<PlanetDto> GetAll(int? page, int? pageSize)
         {
+            _logger.Info($"Method: GetAll - page: {page} - pageSize: {pageSize}");
+
             (int actualPage, int actualPageSize) = PaginationUtils.GetRealPaginationValues(page, pageSize);
 
             (long totalCount, List<Domain.Planet.Planet> planets) = _planetRepository.GetAllPaginated(
@@ -53,6 +62,8 @@ namespace SWApi.Application.Service.Planet
 
         public PlanetDto GetById(Guid id)
         {
+            _logger.Info($"Method: GetById");
+
             if (id == Guid.Empty)
                 return default;
 
@@ -63,6 +74,8 @@ namespace SWApi.Application.Service.Planet
 
         public IEnumerable<PlanetDto> GetByName(string name)
         {
+            _logger.Info($"Method: GetByName");
+
             if (string.IsNullOrWhiteSpace(name))
                 return Enumerable.Empty<PlanetDto>();
 

@@ -1,8 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
+using NLog;
 using SWApi.Application.Service.Planet;
 using SWApi.Data.Repository.Interface;
-using SWApi.Domain.Dto.Api.Planet;
+using SWApi.Domain.Configuration.Logging;
 using SWApi.Domain.Planet;
 using SWApi.Domain.Utils;
 using SWApi.Test.TestUtils;
@@ -12,20 +13,29 @@ namespace SWApi.Test.Application.Service
     [TestClass]
     public class PlanetServiceTest
     {
+        private Mock<ILogger> _mockLogger;
         private Mock<IPlanetRepository> _mockPlanetRepository;
         private PlanetService _planetService;
 
         [TestInitialize]
         public void Init()
         {
+            _mockLogger = new();
+            
+            var mockLogControl = new Mock<ILogControl>();
+            mockLogControl.Setup(x => x.GetLogger(It.IsAny<string>())).Returns(_mockLogger.Object);
+
             _mockPlanetRepository = new();
-            _planetService = new(_mockPlanetRepository.Object);
+
+            _planetService = new(mockLogControl.Object, _mockPlanetRepository.Object);
         }
 
         [TestMethod]
         public void Delete_Should_Return_False_When_Parameter_Is_Empty()
         {
             Assert.IsFalse(_planetService.Delete(Guid.Empty));
+            
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
             _mockPlanetRepository.Verify(x => x.Remove(It.IsAny<string>()), Times.Never);
             _mockPlanetRepository.Verify(x => x.GetById(It.IsAny<string>()), Times.Never);
@@ -44,6 +54,8 @@ namespace SWApi.Test.Application.Service
 
             Assert.AreEqual(expectedResult, _planetService.Delete(id));
 
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
+
             _mockPlanetRepository.Verify(x => x.Remove(It.IsAny<string>()), Times.Once);
             _mockPlanetRepository.Verify(x => x.Remove(id.ToString()), Times.Once);
 
@@ -58,6 +70,8 @@ namespace SWApi.Test.Application.Service
             var result = _planetService.GetById(Guid.Empty);
 
             Assert.IsNull(result);
+
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
             _mockPlanetRepository.Verify(x => x.Remove(It.IsAny<string>()), Times.Never);
             _mockPlanetRepository.Verify(x => x.GetById(It.IsAny<string>()), Times.Never);
@@ -75,6 +89,8 @@ namespace SWApi.Test.Application.Service
             var result = _planetService.GetById(id);
 
             Assert.IsNull(result);
+
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
             _mockPlanetRepository.Verify(x => x.GetById(It.IsAny<string>()), Times.Once);
             _mockPlanetRepository.Verify(x => x.GetById(id.ToString()), Times.Once);
@@ -113,6 +129,8 @@ namespace SWApi.Test.Application.Service
             Assert.IsTrue(planet.GetEnumeratedPlanetProps().SequenceEqual(result.GetEnumeratedPlanetDtoProps()));
             Assert.IsTrue(film.GetEnumeratedFilmProps().SequenceEqual((result.Films.First().GetEnumeratedFilmDtoProps())));
 
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
+
             _mockPlanetRepository.Verify(x => x.GetById(It.IsAny<string>()), Times.Once);
             _mockPlanetRepository.Verify(x => x.GetById(id.ToString()), Times.Once);
 
@@ -131,6 +149,8 @@ namespace SWApi.Test.Application.Service
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.Any());
+
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
             _mockPlanetRepository.Verify(x => x.Remove(It.IsAny<string>()), Times.Never);
             _mockPlanetRepository.Verify(x => x.GetById(It.IsAny<string>()), Times.Never);
@@ -173,6 +193,8 @@ namespace SWApi.Test.Application.Service
             
             Assert.IsTrue(noFilmPlanet.GetEnumeratedPlanetProps().SequenceEqual(secondPlanetFromResult.GetEnumeratedPlanetDtoProps()));
             Assert.AreEqual(0, secondPlanetFromResult.Films.Count());
+
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
             _mockPlanetRepository.Verify(x => x.GetByName(It.IsAny<string>()), Times.Once);
             _mockPlanetRepository.Verify(x => x.GetByName(planetName), Times.Once);
@@ -244,6 +266,8 @@ namespace SWApi.Test.Application.Service
 
             Assert.IsTrue(secondPlanet.GetEnumeratedPlanetProps().SequenceEqual(secondGetAllPlanet.GetEnumeratedPlanetDtoProps()));
             Assert.IsTrue(secondPlanet.Films.First().GetEnumeratedFilmProps().SequenceEqual(secondGetAllPlanet.Films.First().GetEnumeratedFilmDtoProps()));
+
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
             _mockPlanetRepository.Verify(x => x.GetAllPaginated(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once);
             _mockPlanetRepository.Verify(x => x.GetAllPaginated(
@@ -322,6 +346,8 @@ namespace SWApi.Test.Application.Service
             Assert.IsTrue(secondPlanet.GetEnumeratedPlanetProps().SequenceEqual(secondGetAllPlanet.GetEnumeratedPlanetDtoProps()));
             Assert.IsTrue(secondPlanet.Films.First().GetEnumeratedFilmProps().SequenceEqual(secondGetAllPlanet.Films.First().GetEnumeratedFilmDtoProps()));
 
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
+
             _mockPlanetRepository.Verify(x => x.GetAllPaginated(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once);
             _mockPlanetRepository.Verify(x => x.GetAllPaginated(
                     page,
@@ -356,6 +382,8 @@ namespace SWApi.Test.Application.Service
             Assert.AreEqual(0, result.Items.Count());
 
             var expectedCalledPage = page < 1 ? 1 : page;
+
+            _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
             _mockPlanetRepository.Verify(x => x.GetAllPaginated(It.IsAny<int?>(), It.IsAny<int?>()), Times.Once);
             _mockPlanetRepository.Verify(x => x.GetAllPaginated(
