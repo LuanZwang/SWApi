@@ -8,7 +8,7 @@ The API consists in 4 endpoints, being them:
 |:-----|:--------------------------------------|:------|-|
 | GetById    | api/planets/{id}                    | GET   | Gets a planet by its id |
 | GetByName  | api/planets/name/{name}             | GET   | Gets a list of planets by their names |
-| GetAll     | api/planets?page={page}&pageSize={page} | GET   | Gets a dto with pagination infos and the paginated planets list
+| GetAll     | api/planets?page={page}&pageSize={pageSize} | GET   | Gets a dto with pagination infos and the paginated planets list
 | Delete     | api/planets/{id}                    | DELETE| Deletes a planet by its id |
 
 
