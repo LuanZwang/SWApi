@@ -5,85 +5,108 @@ using SWApi.Domain.Dto.Api.Planet;
 using SWApi.Domain.Planet;
 using SWApi.Domain.Utils;
 
-namespace SWApi.Application.Service.Planet;
-
-public sealed class PlanetService : IPlanetService
+namespace SWApi.Application.Service.Planet
 {
-    private readonly IPlanetRepository _planetRepository;
 
-    public PlanetService(
-        IPlanetRepository planetRepository)
+    public sealed class PlanetService : IPlanetService
     {
-        _planetRepository = planetRepository;
-    }
+        private readonly IPlanetRepository _planetRepository;
 
-    public bool Delete(Guid id)
-    {
-        if (id == Guid.Empty)
-            return false;
-
-        return _planetRepository.Remove(id.ToString());
-    }
-
-    public GetAllDto<PlanetDto> GetAll(int? page, int? pageSize)
-    {
-        (int actualPage, int actualPageSize) = PaginationUtils.GetRealPaginationValues(page, pageSize);
-
-        var planets = _planetRepository.GetAllPaginated(
-            page: actualPage,
-            pageSize: actualPageSize);
-
-        var totalPages = (int)Math.Ceiling(((double)planets.TotalCount / actualPageSize));
-
-        int? nextPage = actualPage + 1 > totalPages ? null : actualPage + 1;
-        int? previousPage = actualPage == 1 ? null : actualPage - 1;
-
-        var result = planets.Planets.Select(ConvertToPlanetDto);
-
-        return new GetAllDto<PlanetDto>
+        public PlanetService(
+            IPlanetRepository planetRepository)
         {
-            PageSize = planets.Planets.Count,
-            TotalCount = planets.TotalCount,
-            NextPage = nextPage,
-            PreviousPage = previousPage,
-            Items = result
-        };
-    }
+            _planetRepository = planetRepository;
+        }
 
-    public PlanetDto GetById(Guid id)
-    {
-        var planet = _planetRepository.GetById(id.ToString());
+        public bool Delete(Guid id)
+        {
+            if (id == Guid.Empty)
+                return false;
 
-        return ConvertToPlanetDto(planet);
-    }
+            return _planetRepository.Remove(id.ToString());
+        }
 
-    public PlanetDto GetByName(string name)
-    {
-        var planet = _planetRepository.GetByName(name);
+        public GetAllDto<PlanetDto> GetAll(int? page, int? pageSize)
+        {
+            (int actualPage, int actualPageSize) = PaginationUtils.GetRealPaginationValues(page, pageSize);
 
-        return ConvertToPlanetDto(planet);
-    }
+            (long totalCount, List<Domain.Planet.Planet> planets) = _planetRepository.GetAllPaginated(
+                page: actualPage,
+                pageSize: actualPageSize);
 
-    private PlanetDto ConvertToPlanetDto(Domain.Planet.Planet planet)
-    {
-         return new PlanetDto
-         {
-             Id = planet.Id,
-             Name = planet.Name,
-             Climate = planet.Climate,
-             Terrain = planet.Terrain,
-             Films = ConvertToFilmsDto(planet.Films)
-         };
-    }
+            (int? previousPage, int? nextPage) = PaginationUtils.GetPreviousAndNextPages(
+                totalCount: totalCount,
+                page: actualPage,
+                pageSize: actualPageSize);
 
-    private IEnumerable<FilmDto> ConvertToFilmsDto(IEnumerable<Film> planetFilms)
-    {
-        foreach (var film in planetFilms)
-            yield return new FilmDto
+            var planetsDtos = ConvertToPlanetDtos(planets);
+
+            return new GetAllDto<PlanetDto>
             {
-                Title = film.Title,
-                Director = film.Director,
-                ReleaseDate = film.ReleaseDate
+                PageSize = planets.Count,
+                TotalCount = totalCount,
+                NextPage = nextPage,
+                PreviousPage = previousPage,
+                Items = planetsDtos
             };
+        }
+
+        public PlanetDto GetById(Guid id)
+        {
+            if (id == Guid.Empty)
+                return default;
+
+            var planet = _planetRepository.GetById(id.ToString());
+
+            return ConvertToPlanetDto(planet);
+        }
+
+        public IEnumerable<PlanetDto> GetByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return Enumerable.Empty<PlanetDto>();
+
+            var planets = _planetRepository.GetByName(name);
+
+            return ConvertToPlanetDtos(planets);
+        }
+
+        private static IEnumerable<FilmDto> ConvertToFilmDtos(IEnumerable<Film> planetFilms)
+        {
+            if (planetFilms is null)
+                yield break;
+
+            foreach (var film in planetFilms)
+                yield return new FilmDto
+                {
+                    Title = film.Title,
+                    Director = film.Director,
+                    ReleaseDate = film.ReleaseDate
+                };
+        }
+
+        private static IEnumerable<PlanetDto> ConvertToPlanetDtos(List<Domain.Planet.Planet> planets)
+        {
+            if (!planets.Any())
+                yield break;
+
+            foreach (var planet in planets)
+                yield return ConvertToPlanetDto(planet);
+        }
+
+        private static PlanetDto ConvertToPlanetDto(Domain.Planet.Planet planet)
+        {
+            if (planet is null)
+                return default;
+
+            return new PlanetDto
+            {
+                Id = planet.Id,
+                Name = planet.Name,
+                Climate = planet.Climate,
+                Terrain = planet.Terrain,
+                Films = ConvertToFilmDtos(planet.Films)
+            };
+        }
     }
 }

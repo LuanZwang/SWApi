@@ -12,17 +12,19 @@ namespace SWApi.Data
     {
         public static void ConfigureData(this IServiceCollection services, IConfiguration configuration)
         {
-            ConfigureMongoDbConnection(ref services, configuration);
-            ConfigureRepositories(ref services);
+            ConfigureMongoDbConnection(services, configuration);
+            ConfigureRepositories(services);
         }
 
-        private static void ConfigureMongoDbConnection(ref IServiceCollection services, IConfiguration configuration)
+        private static void ConfigureMongoDbConnection(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddSingleton(x=> MongoConnectionConfig.ConfigureFromEnvs(configuration, (ILogControl)x.GetService(typeof(ILogControl))));
+            services.AddSingleton<IMongoConnectionConfig>(
+                x=> MongoConnectionConfig.ConfigureFromEnvs(configuration, (ILogControl)x.GetService(typeof(ILogControl))));
+
             services.AddSingleton<IMongoConnection, MongoConnection>();
         }
 
-        private static void ConfigureRepositories(ref IServiceCollection services)
+        private static void ConfigureRepositories(IServiceCollection services)
         {
             services.AddScoped<IPlanetRepository, PlanetRepository>();
         }

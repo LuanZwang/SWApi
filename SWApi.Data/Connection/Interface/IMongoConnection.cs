@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 
-namespace SWApi.Data.Connection.Interface;
-
-public interface IMongoConnection
+namespace SWApi.Data.Connection.Interface
 {
-    IMongoCollection<T> GetCollection<T>(string collectionName, Action<IMongoCollection<T>> createCollectionIndexes = null);
+    public interface IMongoConnection
+    {
+        IMongoCollection<T> GetCollection<T>(string collectionName, Action<IMongoCollection<T>> createCollectionIndexes = null);
+    }
 }

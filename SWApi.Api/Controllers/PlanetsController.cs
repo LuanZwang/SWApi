@@ -1,58 +1,75 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SWApi.Application.Service.Interface;
+using SWApi.Domain.Dto.Api.Commom;
 using SWApi.Domain.Dto.Api.Planet;
 
-namespace SWApi.Api.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-[Produces("application/json")]
-[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-public class PlanetsController : ControllerBase
+namespace SWApi.Api.Controllers
 {
-    private readonly IPlanetService _planetService;
-    
-    public PlanetsController(IPlanetService planetService)
+    [ApiController]
+    [Route("api/[controller]")]
+    [Produces(contentType: "application/json")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+    public class PlanetsController : ControllerBase
     {
-        _planetService = planetService;
-    }
+        private readonly IPlanetService _planetService;
 
-    /// <summary>
-    /// Searches for a planet by its id and returns it.
-    /// </summary>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    [HttpGet, Route("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlanetDto))]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public IActionResult Get(Guid id)
-    {
-        if (id == Guid.Empty)
-            return BadRequest("Only valid GUIDs are allowed.");
+        public PlanetsController(IPlanetService planetService)
+        {
+            _planetService = planetService;
+        }
 
-        return Ok(_planetService.GetById(id));
-    }
+        [HttpGet, Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlanetDto))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetById(Guid id)
+        {
+            if (id == Guid.Empty)
+                return BadRequest("Only valid GUIDs are allowed.");
 
-    [HttpGet, Route("name/{name}")]
-    public IActionResult GetByName(string name)
-    {
-        _planetService.GetByName(name);
+            var planetResult = _planetService.GetById(id);
 
-        return Ok();
-    }
+            if (planetResult is null)
+                return NotFound();
 
-    [HttpGet]
-    public IActionResult GetAll([FromQuery] int? page, [FromQuery] int? pageSize)
-    {
-        return Ok(_planetService.GetAll(page, pageSize));
-    }
+            return Ok(planetResult);
+        }
 
-    [HttpDelete, Route("{id}")]
-    public IActionResult Delete(Guid id)
-    {
-        var deleted = _planetService.Delete(id);
+        [HttpGet, Route("name/{name}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlanetDto[]))]
+        public IActionResult GetByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return BadRequest("Planet name for search should be informed.");
+            else if (name.Length > 50)
+                return BadRequest("Planet name for search should not be greater than 50 characters.");
 
+            return Ok(_planetService.GetByName(name));
+        }
 
-        return deleted ? NoContent() : NotFound();
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetAllDto<PlanetDto>))]
+        public IActionResult GetAll([FromQuery] int? page, [FromQuery] int? pageSize)
+        {
+            if (pageSize.HasValue && pageSize.Value > 100)
+                return BadRequest("Page size cannot be greater than 100.");
+
+            return Ok(_planetService.GetAll(page, pageSize));
+        }
+
+        [HttpDelete, Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult Delete(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Only valid GUIDs are allowed.");
+            }
+
+            var deleted = _planetService.Delete(id);
+
+            return deleted ? NoContent() : NotFound();
+        }
     }
 }

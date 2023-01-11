@@ -5,67 +5,63 @@ using SWApi.Data.Repository.Interface;
 using SWApi.Domain.Configuration.Logging;
 using SWApi.Domain.Utils;
 
-namespace SWApi.Data.Repository.Planet;
-
-public sealed class PlanetRepository : IPlanetRepository
+namespace SWApi.Data.Repository.Planet
 {
-    public IMongoCollection<Domain.Planet.Planet> Collection { get; }
-    private readonly Logger _logger;
-
-    public PlanetRepository(
-        ILogControl logger,
-        IMongoConnection mongoConnection)
+    public class PlanetRepository : IPlanetRepository
     {
-        _logger = logger.GetLogger(GetType().Name);
-        Collection = mongoConnection.GetCollection<Domain.Planet.Planet>("planets", CreateCollectionIndexes);
-    }
+        public IMongoCollection<Domain.Planet.Planet> Collection { get; }
+        private readonly ILogger _logger;
 
-    public void CreateCollectionIndexes(IMongoCollection<Domain.Planet.Planet> collection)
-    {
-        try
+        public PlanetRepository(
+            ILogControl logger,
+            IMongoConnection mongoConnection,
+            IMongoCollection<Domain.Planet.Planet> mongoCollection = default)
         {
-            _logger.Info($"Creating index to {GetType().Name}");
-
-            var index = new CreateIndexModel<Domain.Planet.Planet>(Builders<Domain.Planet.Planet>.IndexKeys.Ascending(x => x.Id));
-
-            collection.Indexes.CreateOne(index);
-        }
-        catch (Exception ex)
-        {
-            _logger.Error($"Creating index to {GetType().Name} error: {ex.Message}");
-        }
-    }
-
-    public Domain.Planet.Planet GetById(string id) =>
-        Collection.AsQueryable().SingleOrDefault(x => x.Id == id);
-
-    public bool Remove(string id)
-    {
-        var result = Collection.DeleteOne(x => x.Id == id);
-
-        return result.DeletedCount == 1;
-    }
-
-    public Domain.Planet.Planet GetByName(string name)
-    {
-        var planets = Collection.AsQueryable().Where(x => x.Name == name).ToList();
-
-        if (planets.Count > 1)
-        {
-            
-
-            return null;
+            _logger = logger.GetLogger(GetType().Name);
+            Collection = mongoCollection ?? mongoConnection.GetCollection<Domain.Planet.Planet>("planets", CreateCollectionIndexes);
         }
 
-        return planets.First();
-    }
+        public virtual void CreateCollectionIndexes(IMongoCollection<Domain.Planet.Planet> collection)
+        {
+            try
+            {
+                _logger.Info($"Creating index to {GetType().Name}");
 
-    public (List<Domain.Planet.Planet> Planets, long TotalCount) GetAllPaginated(int page = 1, int pageSize = 60)
-    {
-        var totalCount = Collection.CountDocuments(Builders<Domain.Planet.Planet>.Filter.Empty);
+                var index = new CreateIndexModel<Domain.Planet.Planet>(
+                    keys: Builders<Domain.Planet.Planet>.IndexKeys.Ascending(x => x.Id),
+                    options: new CreateIndexOptions
+                    {
+                        Collation = new Collation(locale: "en", caseFirst: CollationCaseFirst.Off, strength: CollationStrength.Secondary)
+                    });
 
-        var result = Collection.AsQueryable().Paginate(page, pageSize).ToList();
+                collection.Indexes.CreateOne(index);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Creating index to {GetType().Name} error: {ex.Message}");
+            }
+        }
 
-        return (result, totalCount);
+        public Domain.Planet.Planet GetById(string id) =>
+            Collection.AsQueryable().SingleOrDefault(x => x.Id == id);
+
+        public bool Remove(string id)
+        {
+            var result = Collection.DeleteOne(x => x.Id == id);
+
+            return result.DeletedCount == 1;
+        }
+
+        public List<Domain.Planet.Planet> GetByName(string name) =>
+            Collection.Find(filter: Builders<Domain.Planet.Planet>.Filter.Where(x => x.Name == name)).ToList();
+
+        public (long TotalCount, List<Domain.Planet.Planet> Items) GetAllPaginated(int? page, int? pageSize)
+        {
+            var totalCount = Collection.CountDocuments(Builders<Domain.Planet.Planet>.Filter.Empty);
+
+            var result = Collection.AsQueryable().Paginate(page, pageSize).ToList();
+
+            return (totalCount, result);
+        }
     }
 }

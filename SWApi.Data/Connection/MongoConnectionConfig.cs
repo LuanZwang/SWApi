@@ -1,17 +1,17 @@
 ﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Configuration;
 using MongoDB.Driver.Core.Events;
+using SWApi.Data.Connection.Interface;
 using SWApi.Domain.Configuration.Logging;
 
 namespace SWApi.Data.Connection
 {
-    public class MongoConnectionConfig
+    public class MongoConnectionConfig : IMongoConnectionConfig
     {
         public string DatabaseName { get; init; }
-        public MongoClientSettings MongoClientSettings { get; init; }
+        private MongoClientSettings MongoClientSettings { get; init; }
+        private IMongoClient MongoClient { get; init; }
 
         public static MongoConnectionConfig ConfigureFromEnvs(IConfiguration configuration, ILogControl logger)
         {
@@ -23,7 +23,8 @@ namespace SWApi.Data.Connection
 
             var mongoClientSettings = MongoClientSettings.FromUrl(new MongoUrl(connStr));
 
-            mongoClientSettings.ClusterConfigurator = cb => {
+            mongoClientSettings.ClusterConfigurator = cb =>
+            {
                 cb.Subscribe<CommandStartedEvent>(e =>
                 {
                     logger.GetLogger(nameof(MongoConnectionConfig)).Debug($"{e.CommandName} - {e.Command.ToJson()}");
@@ -33,15 +34,11 @@ namespace SWApi.Data.Connection
             return new()
             {
                 DatabaseName = dbName,
-                MongoClientSettings = mongoClientSettings
+                MongoClientSettings = mongoClientSettings,
+                MongoClient = new MongoClient(mongoClientSettings)
             };
         }
 
-        //public void SetLogging(ILogger logger) =>
-        //    MongoClientSettings.ClusterConfigurator = cb => {
-        //        cb.Subscribe<CommandStartedEvent>(e => {
-        //            logger.LogInformation($"{e.CommandName} - {e.Command.ToJson()}");
-        //        });
-        //    };
+        public IMongoClient GetMongoClient() => MongoClient;
     }
 }

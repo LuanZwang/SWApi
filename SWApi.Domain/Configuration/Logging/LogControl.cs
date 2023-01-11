@@ -9,17 +9,20 @@ namespace SWApi.Domain.Configuration.Logging
 {
     public class LogControl : ILogControl
     {
+        private const string _defaultLogLevel = "Info";
         public string UtcOffset { get; set; } = "-03:00";
         public string LogLevel { get; set; }
 
-        public LogControl()
+        public LogControl(string logLevel)
         {
-            ConfigureLog("debug");
+             ConfigureLog(logLevel);
         }
 
         private static void ConfigureLog(string logLevel)
         {
-            LoggingConfiguration loggingConfiguration = new LoggingConfiguration();
+            if (string.IsNullOrWhiteSpace(logLevel))
+                logLevel = _defaultLogLevel;
+
             var jsonLayout = new JsonLayout();
             jsonLayout.Attributes.Add(new JsonAttribute("date", Layout.FromString("${longdate}")));
             jsonLayout.Attributes.Add(new JsonAttribute("level", Layout.FromString("${level:upperCase=true}")));
@@ -38,15 +41,17 @@ namespace SWApi.Domain.Configuration.Logging
                 Encoding = Encoding.UTF8
             };
 
+            LoggingConfiguration loggingConfiguration = new();
+
             loggingConfiguration.AddTarget(logfile);
             loggingConfiguration.AddRule(NLog.LogLevel.FromString(logLevel), NLog.LogLevel.Fatal, logfile);
 
             LogManager.Configuration = loggingConfiguration;
         }
 
-        public Logger GetLogger(string name)
+        public ILogger GetLogger(string name)
         {
-            return LogManager.GetCurrentClassLogger();
+            return LogManager.GetLogger(name);
         }
     }
 }

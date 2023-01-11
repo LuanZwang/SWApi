@@ -1,11 +1,12 @@
 ﻿using SWApi.Domain.EntityBase;
 
-namespace SWApi.Data.Repository.Base;
-
-public interface IRepository<T> where T : Entity
+namespace SWApi.Data.Repository.Base
 {
-    T GetById(string id);
-    bool Remove(string id);
-    Domain.Planet.Planet GetByName(string name);
-    public (List<Domain.Planet.Planet> Planets, long TotalCount) GetAllPaginated(int page = 1, int pageSize = 60);
+    public interface IRepository<T> where T : Entity
+    {
+        T GetById(string id);
+        bool Remove(string id);
+        List<Domain.Planet.Planet> GetByName(string name);
+        public (long TotalCount, List<T> Items) GetAllPaginated(int? page, int? pageSize);
+    }
 }

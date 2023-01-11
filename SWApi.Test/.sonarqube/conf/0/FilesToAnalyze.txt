@@ -1,0 +1,9 @@
+﻿C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\Configuration\Logging\ILogControl.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\Configuration\Logging\LogControl.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\Dto\Api\Commom\GetAllDto.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\Dto\Api\Planet\FilmDto.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\Dto\Api\Planet\PlanetDto.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\EntityBase\Entity.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\Planet\Film.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\Planet\Planet.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Domain\Utils\PaginationUtils.cs

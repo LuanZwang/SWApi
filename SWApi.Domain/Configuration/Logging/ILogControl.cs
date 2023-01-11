@@ -1,8 +1,9 @@
 ﻿using NLog;
 
-namespace SWApi.Domain.Configuration.Logging;
-
-public interface ILogControl
+namespace SWApi.Domain.Configuration.Logging
 {
-    Logger GetLogger(string name);
+    public interface ILogControl
+    {
+        ILogger GetLogger(string name);
+    }
 }

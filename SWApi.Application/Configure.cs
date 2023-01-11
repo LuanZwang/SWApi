@@ -2,17 +2,18 @@
 using SWApi.Application.Service.Interface;
 using SWApi.Application.Service.Planet;
 
-namespace SWApi.Application;
-
-public static class Configure
+namespace SWApi.Application
 {
-    public static void ConfigureApplication(this IServiceCollection services)
+    public static class Configure
     {
-        ConfigureServices(services);
-    }
+        public static void ConfigureApplication(this IServiceCollection services)
+        {
+            ConfigureServices(services);
+        }
 
-    private static void ConfigureServices(IServiceCollection services)
-    {
-        services.AddScoped<IPlanetService, PlanetService>();
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddScoped<IPlanetService, PlanetService>();
+        }
     }
 }

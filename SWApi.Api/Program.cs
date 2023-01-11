@@ -18,13 +18,12 @@ namespace SWApi.Api
             
             builder.Services.AddRouting(options => options.LowercaseUrls = true);
 
-            builder.Services.AddConfiguration();
+            builder.Services.AddConfiguration(builder.Configuration);
             builder.Services.ConfigureApplication();
             builder.Services.ConfigureData(builder.Configuration);
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

@@ -1,0 +1,3 @@
+﻿C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Application\Configure.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Application\Service\Interface\IPlanetService.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Application\Service\Planet\PlanetService.cs

@@ -1,12 +1,13 @@
 ﻿using SWApi.Domain.Dto.Api.Commom;
 using SWApi.Domain.Dto.Api.Planet;
 
-namespace SWApi.Application.Service.Interface;
-
-public interface IPlanetService
+namespace SWApi.Application.Service.Interface
 {
-    PlanetDto GetById(Guid id);
-    GetAllDto<PlanetDto> GetAll(int? page, int? pageSize);
-    bool Delete(Guid id);
-    PlanetDto GetByName(string name);
+    public interface IPlanetService
+    {
+        PlanetDto GetById(Guid id);
+        GetAllDto<PlanetDto> GetAll(int? page, int? pageSize);
+        bool Delete(Guid id);
+        IEnumerable<PlanetDto> GetByName(string name);
+    }
 }

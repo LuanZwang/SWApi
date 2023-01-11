@@ -1,0 +1,10 @@
+﻿C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\Configure.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\Controllers\PlanetsController.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\Program.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\obj\Debug\net7.0\SWApi.Api.GlobalUsings.g.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\obj\Debug\net7.0\.NETCoreApp,Version=v7.0.AssemblyAttributes.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\obj\Debug\net7.0\SWApi.Api.AssemblyInfo.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\obj\Debug\net7.0\SWApi.Api.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\appsettings.Development.json
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\appsettings.json
+C:\Users\Luan\Documents\Desenvolvimento\git\SWApi\SWApi.Api\Properties\launchSettings.json
