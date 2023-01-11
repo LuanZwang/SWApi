@@ -148,7 +148,7 @@ It will create a container of mongodb, where the connection string is:
     mongodb://admin:admin@127.0.0.1:27017
 ```
 
-After that, you can use the application of your choice to run the command [on this gist](https://gist.github.com/LuanZwang/2b2f0780bd703580caa5da0230c5a724) to add the [swapi planets](https://swapi.dev/api/planets) on your localhost MongoDB.
+After that, you can use the application of your choice to run the mongo db command [in this gist](https://gist.github.com/LuanZwang/2b2f0780bd703580caa5da0230c5a724) to add the [swapi planets](https://swapi.dev/api/planets) on your localhost MongoDB.
 
 With all complete, you can run the application
 
