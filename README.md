@@ -1,5 +1,6 @@
 # SWApi
-This project was made to test some tech skills
+This project was made to test some tech skills, being this based on the [Star Wars API](https://swapi.dev/).
+It's a simple project that returns the planets from the Star Wars movies and in which films they're shown.
 
 #### This documentation is divided in three parts
 * ### API
