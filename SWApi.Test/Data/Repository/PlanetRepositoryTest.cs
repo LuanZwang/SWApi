@@ -46,9 +46,9 @@ namespace SWApi.Test.Data.Repository
             var mockMongoConnection = new Mock<Mongo2GoConnection>();
 
             mockMongoConnection.Setup(x => x.GetCollection(It.IsAny<string>(), It.IsAny<Action<IMongoCollection<Planet>>>()))
-                .Returns<string, Action<IMongoCollection<Planet>>>((dbName, action) => 
+                .Returns<string, Action<IMongoCollection<Planet>>>((dbName, action) =>
                 {
-                    var collection = _connection.Db.GetCollection<Planet>(dbName+"_test", null);
+                    var collection = _connection.Db.GetCollection<Planet>(dbName + "_test", null);
 
                     return collection;
                 });
@@ -90,7 +90,7 @@ namespace SWApi.Test.Data.Repository
         }
 
         [TestMethod]
-        public void GetById_Should_Return_Planet()
+        public async Task GetById_Should_Return_Planet()
         {
             var expectedResult = new Planet(Guid.NewGuid().ToString())
             {
@@ -130,7 +130,7 @@ namespace SWApi.Test.Data.Repository
 
             _mockPlanetRepository.Object.Collection.InsertMany(planets);
 
-            var result = _mockPlanetRepository.Object.GetById(planets[0].Id);
+            var result = await _mockPlanetRepository.Object.GetById(planets[0].Id);
 
             Assert.IsNotNull(result);
 
@@ -141,7 +141,7 @@ namespace SWApi.Test.Data.Repository
         [TestMethod]
         [DataRow("ea749f31-b15c-418e-b9af-74ce2c085f28", false)]
         [DataRow("ea749f31-b15c-418e-b9af-74ce2c085f29", true)]
-        public void Remove_Should_Return_Expected_Result(string idToDelete, bool expectedResult)
+        public async Task Remove_Should_Return_Expected_Result(string idToDelete, bool expectedResult)
         {
             var planets = new List<Planet>
         {
@@ -179,13 +179,13 @@ namespace SWApi.Test.Data.Repository
 
             _mockPlanetRepository.Object.Collection.InsertMany(planets);
 
-            var result = _mockPlanetRepository.Object.Remove(idToDelete);
+            var result = await _mockPlanetRepository.Object.Remove(idToDelete);
 
             Assert.AreEqual(expectedResult, result);
         }
 
         [TestMethod]
-        public void GetByName_Should_Return_Planets()
+        public async Task GetByName_Should_Return_Planets()
         {
             var planets = new List<Planet>
         {
@@ -230,7 +230,7 @@ namespace SWApi.Test.Data.Repository
 
             _mockPlanetRepository.Object.Collection.InsertMany(planets);
 
-            var result = _mockPlanetRepository.Object.GetByName(planets[0].Name);
+            var result = await _mockPlanetRepository.Object.GetByName(planets[0].Name);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count);
@@ -264,24 +264,24 @@ namespace SWApi.Test.Data.Repository
             };
 
             var planets = new List<Planet>
-        {
-            expectedResult,
-            new Planet(Guid.NewGuid().ToString())
             {
-                Name = "planet 1 name",
-                Climate = "planet 1 climate",
-                Terrain = "planet 1 terrain",
-                Films = new[]
+                expectedResult,
+                new Planet(Guid.NewGuid().ToString())
                 {
-                    new Film
+                    Name = "planet 1 name",
+                    Climate = "planet 1 climate",
+                    Terrain = "planet 1 terrain",
+                    Films = new[]
                     {
-                        Title = "film 1 title",
-                        Director = "film 1 director",
-                        ReleaseDate = "2022-01-00"
+                        new Film
+                        {
+                            Title = "film 1 title",
+                            Director = "film 1 director",
+                            ReleaseDate = "2022-01-00"
+                        }
                     }
                 }
-            }
-        };
+            };
 
             _mockPlanetRepository.Object.Collection.InsertMany(planets);
 

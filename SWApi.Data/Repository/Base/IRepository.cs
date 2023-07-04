@@ -4,9 +4,9 @@ namespace SWApi.Data.Repository.Base
 {
     public interface IRepository<T> where T : Entity
     {
-        T GetById(string id);
-        bool Remove(string id);
-        List<Domain.Planet.Planet> GetByName(string name);
-        public (long TotalCount, List<T> Items) GetAllPaginated(int? page, int? pageSize);
+        Task<T> GetById(string id);
+        Task<bool> Remove(string id);
+        Task<List<Domain.Planet.Planet>> GetByName(string name);
+        (long TotalCount, List<T> Items) GetAllPaginated(int? page, int? pageSize);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 using NLog;
 using SWApi.Data.Connection.Interface;
 using SWApi.Data.Repository.Interface;
@@ -42,18 +43,18 @@ namespace SWApi.Data.Repository.Planet
             }
         }
 
-        public Domain.Planet.Planet GetById(string id) =>
-            Collection.AsQueryable().SingleOrDefault(x => x.Id == id);
+        public async Task<Domain.Planet.Planet> GetById(string id) =>
+            await Collection.AsQueryable().SingleOrDefaultAsync(x => x.Id == id);
 
-        public bool Remove(string id)
+        public async Task<bool> Remove(string id)
         {
-            var result = Collection.DeleteOne(x => x.Id == id);
+            var result = await Collection.DeleteOneAsync(x => x.Id == id);
 
             return result.DeletedCount == 1;
         }
 
-        public List<Domain.Planet.Planet> GetByName(string name) =>
-            Collection.Find(filter: Builders<Domain.Planet.Planet>.Filter.Where(x => x.Name == name)).ToList();
+        public async Task<List<Domain.Planet.Planet>> GetByName(string name) =>
+            await Collection.Find(filter: Builders<Domain.Planet.Planet>.Filter.Where(x => x.Name == name)).ToListAsync();
 
         public (long TotalCount, List<Domain.Planet.Planet> Items) GetAllPaginated(int? page, int? pageSize)
         {

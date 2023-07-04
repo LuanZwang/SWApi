@@ -5,9 +5,9 @@ namespace SWApi.Application.Service.Interface
 {
     public interface IPlanetService
     {
-        PlanetDto GetById(Guid id);
+        Task<PlanetDto> GetById(Guid id);
         GetAllDto<PlanetDto> GetAll(int? page, int? pageSize);
-        bool Delete(Guid id);
-        IEnumerable<PlanetDto> GetByName(string name);
+        Task<bool> Delete(Guid id);
+        Task<IEnumerable<PlanetDto>> GetByName(string name);
     }
 }

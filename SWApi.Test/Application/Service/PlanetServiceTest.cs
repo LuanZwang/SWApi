@@ -31,9 +31,9 @@ namespace SWApi.Test.Application.Service
         }
 
         [TestMethod]
-        public void Delete_Should_Return_False_When_Parameter_Is_Empty()
+        public async Task Delete_Should_Return_False_When_Parameter_Is_Empty()
         {
-            Assert.IsFalse(_planetService.Delete(Guid.Empty));
+            Assert.IsFalse(await _planetService.Delete(Guid.Empty));
             
             _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
@@ -46,13 +46,13 @@ namespace SWApi.Test.Application.Service
         [TestMethod]
         [DataRow(false)]
         [DataRow(true)]
-        public void Delete_Should_Return_Expected_Result(bool expectedResult)
+        public async Task Delete_Should_Return_Expected_Result(bool expectedResult)
         {
             var id = Guid.NewGuid();
 
-            _mockPlanetRepository.Setup(x => x.Remove(It.IsAny<string>())).Returns(expectedResult);
+            _mockPlanetRepository.Setup(x => x.Remove(It.IsAny<string>())).ReturnsAsync(expectedResult);
 
-            Assert.AreEqual(expectedResult, _planetService.Delete(id));
+            Assert.AreEqual(expectedResult, await _planetService.Delete(id));
 
             _mockLogger.Verify(x => x.Info(It.IsAny<string>()), Times.Once);
 
@@ -65,9 +65,9 @@ namespace SWApi.Test.Application.Service
         }
 
         [TestMethod]
-        public void GetById_Should_Return_Default_When_Parameter_Is_Empty()
+        public async Task GetById_Should_Return_Default_When_Parameter_Is_Empty()
         {
-            var result = _planetService.GetById(Guid.Empty);
+            var result = await _planetService.GetById(Guid.Empty);
 
             Assert.IsNull(result);
 
@@ -80,13 +80,13 @@ namespace SWApi.Test.Application.Service
         }
 
         [TestMethod]
-        public void GetById_Should_Return_Default_When_Planet_Not_Found()
+        public async Task GetById_Should_Return_Default_When_Planet_Not_Found()
         {
             var id = Guid.NewGuid();
 
-            _mockPlanetRepository.Setup(x => x.GetById(It.IsAny<string>())).Returns(default(Planet));
+            _mockPlanetRepository.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(default(Planet));
 
-            var result = _planetService.GetById(id);
+            var result = await _planetService.GetById(id);
 
             Assert.IsNull(result);
 
@@ -101,7 +101,7 @@ namespace SWApi.Test.Application.Service
         }
 
         [TestMethod]
-        public void GetById_Should_Return_PlanetDto()
+        public async Task GetById_Should_Return_PlanetDto()
         {
             var film = new Film
             {
@@ -120,9 +120,9 @@ namespace SWApi.Test.Application.Service
                 Films = new[] { film }
             };
 
-            _mockPlanetRepository.Setup(x => x.GetById(It.IsAny<string>())).Returns(planet);
+            _mockPlanetRepository.Setup(x => x.GetById(It.IsAny<string>())).ReturnsAsync(planet);
 
-            var result = _planetService.GetById(id);
+            var result = await _planetService.GetById(id);
 
             Assert.IsNotNull(result);
 
@@ -143,9 +143,9 @@ namespace SWApi.Test.Application.Service
         [DataRow("")]
         [DataRow("    ")]
         [DataRow(null)]
-        public void GetByName_Should_Return_Empty_Enumerable_When_Parameter_Is_Null_Or_White_Space(string planetName)
+        public async Task GetByName_Should_Return_Empty_Enumerable_When_Parameter_Is_Null_Or_White_Space(string planetName)
         {
-            var result = _planetService.GetByName(planetName);
+            var result = await _planetService.GetByName(planetName);
 
             Assert.IsNotNull(result);
             Assert.IsFalse(result.Any());
@@ -159,7 +159,7 @@ namespace SWApi.Test.Application.Service
         }
 
         [TestMethod]
-        public void GetByName_Should_Return_PlanetDto()
+        public async Task GetByName_Should_Return_PlanetDto()
         {
             var planetName = "Planet 123";
 
@@ -178,9 +178,9 @@ namespace SWApi.Test.Application.Service
                 Films = Array.Empty<Film>()
             };
 
-            _mockPlanetRepository.Setup(x => x.GetByName(It.IsAny<string>())).Returns(new List<Planet> { planet, noFilmPlanet });
+            _mockPlanetRepository.Setup(x => x.GetByName(It.IsAny<string>())).ReturnsAsync(new List<Planet> { planet, noFilmPlanet });
 
-            var result = _planetService.GetByName(planetName).ToList();
+            var result = (await _planetService.GetByName(planetName)).ToList();
 
             Assert.IsNotNull(result);
 
@@ -240,10 +240,10 @@ namespace SWApi.Test.Application.Service
             };
 
             var planets = new List<Planet>
-        {
-            firstPlanet,
-            secondPlanet
-        };
+            {
+                firstPlanet,
+                secondPlanet
+            };
 
             _mockPlanetRepository.Setup(x => x.GetAllPaginated(It.IsAny<int>(), It.IsAny<int>())).Returns((totalCount, planets));
 

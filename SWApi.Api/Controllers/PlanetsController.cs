@@ -22,12 +22,12 @@ namespace SWApi.Api.Controllers
         [HttpGet, Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlanetDto))]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             if (id == Guid.Empty)
                 return BadRequest("Only valid GUIDs are allowed.");
 
-            var planetResult = _planetService.GetById(id);
+            var planetResult = await _planetService.GetById(id);
 
             if (planetResult is null)
                 return NotFound();
@@ -37,14 +37,14 @@ namespace SWApi.Api.Controllers
 
         [HttpGet, Route("name/{name}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PlanetDto[]))]
-        public IActionResult GetByName(string name)
+        public async Task<IActionResult> GetByName(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest("Planet name for search should be informed.");
             else if (name.Length > 50)
                 return BadRequest("Planet name for search should not be greater than 50 characters.");
 
-            return Ok(_planetService.GetByName(name));
+            return Ok(await _planetService.GetByName(name));
         }
 
         [HttpGet]
@@ -60,14 +60,12 @@ namespace SWApi.Api.Controllers
         [HttpDelete, Route("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == Guid.Empty)
-            {
                 return BadRequest("Only valid GUIDs are allowed.");
-            }
 
-            var deleted = _planetService.Delete(id);
+            var deleted = await _planetService.Delete(id);
 
             return deleted ? NoContent() : NotFound();
         }

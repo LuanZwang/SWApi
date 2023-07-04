@@ -1,5 +1,4 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace SWApi.Domain.Dto.Api.Planet
 {
