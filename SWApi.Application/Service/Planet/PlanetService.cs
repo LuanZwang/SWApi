@@ -23,14 +23,14 @@ namespace SWApi.Application.Service.Planet
             _planetRepository = planetRepository;
         }
 
-        public bool Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
             _logger.Info($"Method: Delete");
 
             if (id == Guid.Empty)
                 return false;
 
-            return _planetRepository.Remove(id.ToString());
+            return await _planetRepository.Remove(id.ToString());
         }
 
         public GetAllDto<PlanetDto> GetAll(int? page, int? pageSize)
@@ -60,47 +60,33 @@ namespace SWApi.Application.Service.Planet
             };
         }
 
-        public PlanetDto GetById(Guid id)
+        public async Task<PlanetDto> GetById(Guid id)
         {
             _logger.Info($"Method: GetById");
 
             if (id == Guid.Empty)
                 return default;
 
-            var planet = _planetRepository.GetById(id.ToString());
+            var planet = await _planetRepository.GetById(id.ToString());
 
             return ConvertToPlanetDto(planet);
         }
 
-        public IEnumerable<PlanetDto> GetByName(string name)
+        public async Task<IEnumerable<PlanetDto>> GetByName(string name)
         {
             _logger.Info($"Method: GetByName");
 
             if (string.IsNullOrWhiteSpace(name))
                 return Enumerable.Empty<PlanetDto>();
 
-            var planets = _planetRepository.GetByName(name);
+            var planets = await _planetRepository.GetByName(name);
 
             return ConvertToPlanetDtos(planets);
         }
 
-        private static IEnumerable<FilmDto> ConvertToFilmDtos(IEnumerable<Film> planetFilms)
-        {
-            if (planetFilms is null)
-                yield break;
-
-            foreach (var film in planetFilms)
-                yield return new FilmDto
-                {
-                    Title = film.Title,
-                    Director = film.Director,
-                    ReleaseDate = film.ReleaseDate
-                };
-        }
-
         private static IEnumerable<PlanetDto> ConvertToPlanetDtos(List<Domain.Planet.Planet> planets)
         {
-            if (!planets.Any())
+            if (planets.IsNullOrEmpty())
                 yield break;
 
             foreach (var planet in planets)
@@ -120,6 +106,20 @@ namespace SWApi.Application.Service.Planet
                 Terrain = planet.Terrain,
                 Films = ConvertToFilmDtos(planet.Films)
             };
+        }
+
+        private static IEnumerable<FilmDto> ConvertToFilmDtos(IEnumerable<Film> planetFilms)
+        {
+            if (planetFilms.IsNullOrEmpty())
+                yield break;
+
+            foreach (var film in planetFilms)
+                yield return new FilmDto
+                {
+                    Title = film.Title,
+                    Director = film.Director,
+                    ReleaseDate = film.ReleaseDate
+                };
         }
     }
 }

@@ -25,9 +25,9 @@ namespace SWApi.Test.Api.Controllers
         }
 
         [TestMethod]
-        public void GetById_Should_Return_BadRequest_When_Param_Is_Empty()
+        public async Task GetById_Should_Return_BadRequest_When_Param_Is_Empty()
         {
-            var result = _planetsController.GetById(Guid.Empty);
+            var result = await _planetsController.GetById(Guid.Empty);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(BadRequestObjectResult), result.GetType());
@@ -44,13 +44,13 @@ namespace SWApi.Test.Api.Controllers
         }
 
         [TestMethod]
-        public void GetById_Should_Return_NotFound_When_Planet_Not_Found()
+        public async Task GetById_Should_Return_NotFound_When_Planet_Not_Found()
         {
             var id = Guid.NewGuid();
 
-            _mockPlanetService.Setup(x => x.GetById(It.IsAny<Guid>())).Returns(default(PlanetDto));
+            _mockPlanetService.Setup(x => x.GetById(It.IsAny<Guid>())).ReturnsAsync(default(PlanetDto));
 
-            var result = _planetsController.GetById(id);
+            var result = await _planetsController.GetById(id);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(NotFoundResult), result.GetType());
@@ -64,7 +64,7 @@ namespace SWApi.Test.Api.Controllers
         }
 
         [TestMethod]
-        public void GetById_Should_Return_OkHttpObject_PlanetDto()
+        public async Task GetById_Should_Return_OkHttpObject_PlanetDto()
         {
             var expectedPlanetResult = new PlanetDto
             {
@@ -85,9 +85,9 @@ namespace SWApi.Test.Api.Controllers
 
             var id = Guid.NewGuid();
 
-            _mockPlanetService.Setup(x => x.GetById(It.IsAny<Guid>())).Returns(expectedPlanetResult);
+            _mockPlanetService.Setup(x => x.GetById(It.IsAny<Guid>())).ReturnsAsync(expectedPlanetResult);
 
-            var result = _planetsController.GetById(id);
+            var result = await _planetsController.GetById(id);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(OkObjectResult), result.GetType());
@@ -111,9 +111,9 @@ namespace SWApi.Test.Api.Controllers
         [DataRow("")]
         [DataRow("    ")]
         [DataRow(null)]
-        public void GetByName_Should_Return_BadRequest_For_Empty_Or_Null_Parameter(string planetName)
+        public async Task GetByName_Should_Return_BadRequest_For_Empty_Or_Null_Parameter(string planetName)
         {
-            var result = _planetsController.GetByName(planetName);
+            var result = await _planetsController.GetByName(planetName);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(BadRequestObjectResult), result.GetType());
@@ -132,7 +132,7 @@ namespace SWApi.Test.Api.Controllers
         [TestMethod]
         [DataRow(1)]
         [DataRow(50)]
-        public void GetByName_Should_Return_OkHttpObject_PlanetDto(int charsQuantity)
+        public async Task GetByName_Should_Return_OkHttpObject_PlanetDto(int charsQuantity)
         {
             var param = new string('P', charsQuantity);
 
@@ -153,9 +153,9 @@ namespace SWApi.Test.Api.Controllers
             }
             };
 
-            _mockPlanetService.Setup(x => x.GetByName(It.IsAny<string>())).Returns(new[] { expectedPlanetResult });
+            _mockPlanetService.Setup(x => x.GetByName(It.IsAny<string>())).ReturnsAsync(new[] { expectedPlanetResult });
 
-            var result = _planetsController.GetByName(param);
+            var result = await _planetsController.GetByName(param);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(OkObjectResult), result.GetType());
@@ -178,9 +178,9 @@ namespace SWApi.Test.Api.Controllers
         }
 
         [TestMethod]
-        public void GetByName_Should_Return_BadRequest_For_Parameter_Greater_Than_50_Characters()
+        public async Task GetByName_Should_Return_BadRequest_For_Parameter_Greater_Than_50_Characters()
         {
-            var result = _planetsController.GetByName(new string('P', 51));
+            var result = await _planetsController.GetByName(new string('P', 51));
 
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(BadRequestObjectResult), result.GetType());
@@ -276,9 +276,9 @@ namespace SWApi.Test.Api.Controllers
         }
 
         [TestMethod]
-        public void Delete_Should_Return_BadRequest_When_Param_Is_Empty()
+        public async Task Delete_Should_Return_BadRequest_When_Param_Is_Empty()
         {
-            var result = _planetsController.Delete(Guid.Empty);
+            var result = await _planetsController.Delete(Guid.Empty);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(typeof(BadRequestObjectResult), result.GetType());
@@ -297,13 +297,13 @@ namespace SWApi.Test.Api.Controllers
         [TestMethod]
         [DataRow(typeof(NoContentResult), true)]
         [DataRow(typeof(NotFoundResult), false)]
-        public void Delete_Should_Return_Expected_Result(Type expectedTypeResult, bool serviceResult)
+        public async Task Delete_Should_Return_Expected_Result(Type expectedTypeResult, bool serviceResult)
         {
             var id = Guid.NewGuid();
 
-            _mockPlanetService.Setup(x => x.Delete(It.IsAny<Guid>())).Returns(serviceResult);
+            _mockPlanetService.Setup(x => x.Delete(It.IsAny<Guid>())).ReturnsAsync(serviceResult);
 
-            var result = _planetsController.Delete(id);
+            var result = await _planetsController.Delete(id);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(expectedTypeResult, result.GetType());
